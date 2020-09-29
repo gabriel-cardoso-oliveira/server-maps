@@ -17,13 +17,13 @@ env: flex
 
 env_variables:
   DB_HOST: localhost
-  DB_USER: master
-  DB_PASS: sic.adm00
-  DB_NAME: campotvmaps
+  DB_USER: user
+  DB_PASS: password
+  DB_NAME: name
 
   DB_SOCKET_PATH: mysql:unix_socket=/cloudsql
-  CLOUD_SQL_CONNECTION_NAME: quantum-balm-274511:us-central1:campotvmaps
+  CLOUD_SQL_CONNECTION_NAME: instance-connection-name
 
 beta_settings:
-  cloud_sql_instances: quantum-balm-274511:us-central1:campotvmaps
+  cloud_sql_instances: instance-connection-name
 # [END gae_quickstart_yaml]
