@@ -16,6 +16,8 @@ routes.use(authMiddleware);
 
 routes.put('/users', UserController.update);
 routes.put('/users-status', UserController.updateStatus);
-routes.get('/users', UserController.show);
+routes.get('/users', UserController.index);
+routes.get('/users-locations', LocationController.index);
+routes.post('/users-locations', LocationController.show);
 
 export default routes;

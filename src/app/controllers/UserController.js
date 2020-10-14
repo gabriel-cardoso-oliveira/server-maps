@@ -99,7 +99,7 @@ class UserController {
     return res.json({ id, status });
   }
 
-  async show(req, res) {
+  async index(req, res) {
     const users = await User.findAll();
 
     if (!users) {

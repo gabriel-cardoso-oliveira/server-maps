@@ -1,22 +1,100 @@
+import Locations from '../models/Locations';
+
 class LocationController {
   async locations(req, res) {
-    console.log('Headers:\n', req.headers);
-    console.log('Locations:\n', req.body);
-    console.log('------------------------------');
+    req.body.map(async (location) => {
+      const userExists = await Locations.findOne({
+        where: { email: location.email },
+      });
 
-    req.io.emit('locations', req.body);
+      location.latitude = location.lat;
+      location.longitude = location.lon;
+      delete location.lat;
+      delete location.lon;
 
-    res.sendStatus(200);
+      if (userExists) {
+        const { id } = userExists;
+
+        const userLocation = await Locations.findByPk(id);
+
+        const { email } = await userLocation.update(location);
+
+        if (email) req.io.emit('locations', location);
+
+        return res.sendStatus(200);
+      }
+
+      const { id } = await Locations.create(location);
+
+      if (id) req.io.emit('locations', location);
+
+      return res.sendStatus(200);
+    });
   }
 
   async sync(req, res) {
-    console.log('Headers:\n', req.headers);
-    console.log('Synced Locations:\n', req.body);
-    console.log('------------------------------');
+    req.body.map(async (location) => {
+      const userExists = await Locations.findOne({
+        where: { email: location.email },
+      });
 
-    req.io.emit('locations', req.body);
+      location.latitude = location.lat;
+      location.longitude = location.lon;
+      delete location.lat;
+      delete location.lon;
 
-    res.sendStatus(200);
+      if (userExists) {
+        const { id } = userExists;
+
+        const userLocation = await Locations.findByPk(id);
+
+        const { email } = await userLocation.update(location);
+
+        if (email) req.io.emit('locations', location);
+
+        return res.sendStatus(200);
+      }
+
+      const { id } = await Locations.create(location);
+
+      if (id) req.io.emit('locations', location);
+
+      return res.sendStatus(200);
+    });
+  }
+
+  async index(req, res) {
+    const locations = await Locations.findAll();
+
+    if (!locations) {
+      return res
+        .status(401)
+        .json({ error: 'Ocorreu um erro inesperado. Tente novamente!' });
+    }
+
+    return res.json(
+      locations.map((location) => {
+        const { name, email, latitude, longitude } = location;
+
+        return { name, email, latitude, longitude };
+      })
+    );
+  }
+
+  async show(req, res) {
+    const userLocation = await Locations.findOne({
+      where: { email: req.body.email },
+    });
+
+    if (!userLocation) {
+      return res
+        .status(401)
+        .json({ error: 'Ocorreu um erro inesperado. Tente novamente!' });
+    }
+
+    const { name, email, latitude, longitude } = userLocation;
+
+    return res.json({ name, email, latitude, longitude });
   }
 }
 
